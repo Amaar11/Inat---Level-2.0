@@ -1,7 +1,7 @@
 import requests
 from web3 import Web3, HTTPProvider
 from web3.exceptions import ABIFunctionNotFound
-#from fetch_token_balnce import addresses, tokens
+
 
 # Povezivanje sa Ethereum blockchain
 w3 = Web3(HTTPProvider("https://rpc.eth.gateway.fm"))
