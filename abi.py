@@ -4,10 +4,13 @@ import requests
 from web3 import Web3, HTTPProvider
 from web3.exceptions import ABIFunctionNotFound
 
+
+ETHERSCAN_API_KEY = os.getenv('ETHERSCAN_API_KEY')
+
 # Povezivanje sa Ethereum blockchain
 w3 = Web3(HTTPProvider("https://rpc.eth.gateway.fm"))
 
-# Adrese računa za koje želite dohvatiti balanse
+# Adrese računa za koje želimo dohvatiti balanse
 addresses = [
     ("Contract", "0x14052a178026665BB27fd0Be549f8FB8a88780d4"),
     ("EOA", "0xC6A8109D566D31758329452c626D473B7815380E"),
@@ -23,8 +26,6 @@ tokens = {
     "SWISE": "0xA28C2d79f0c5B78CeC699DAB0303008179815396",
     "WBTC": "0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599"
 }
-
-# Funkcija za dohvaćanje ABI podataka s Etherscan API-ja
 def get_token_abi(token_address):
     # Provjeravamo je li već preuzet ABI podaci iz lokalne datoteke
     filename = f"{token_address}_abi.json"
@@ -33,7 +34,7 @@ def get_token_abi(token_address):
             return json.load(file)
 
     # Ako ABI podaci nisu već preuzeti, dohvaćamo ih putem API poziva
-    api_url = f"https://api.etherscan.io/api?module=contract&action=getabi&address={token_address}&apikey=G4Z71GSAI5U1GFU97P1JBYVDTFAQW68UJ2"
+    api_url = f"https://api.etherscan.io/api?module=contract&action=getabi&address={token_address}&apikey={ETHERSCAN_API_KEY}"
     response = requests.get(api_url)
     if response.status_code == 200:
         abi = response.json()['result']
