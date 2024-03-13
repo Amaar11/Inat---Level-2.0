@@ -6,7 +6,7 @@ def create_portfolio_visualizations(total_values):
     tokens = list(total_values.keys())  # Dobijamo listu svih tokena
     values = [0] * len(tokens)    # Inicijaliziramo listu vrijednosti za svaki token na 0
 
-    # Za svaku adresu u ukupnim vrijednostima
+    
     for address_type, address_values in total_values.items():
         for i, token_value in enumerate(address_values):
             if i < len(tokens):
