@@ -1,7 +1,8 @@
+import os
+import json
 import requests
 from web3 import Web3, HTTPProvider
 from web3.exceptions import ABIFunctionNotFound
-
 
 # Povezivanje sa Ethereum blockchain
 w3 = Web3(HTTPProvider("https://rpc.eth.gateway.fm"))
@@ -25,18 +26,26 @@ tokens = {
 
 # Funkcija za dohvaćanje ABI podataka s Etherscan API-ja
 def get_token_abi(token_address):
+    # Provjeravamo je li već preuzet ABI podaci iz lokalne datoteke
+    filename = f"{token_address}_abi.json"
+    if os.path.exists(filename):
+        with open(filename, "r") as file:
+            return json.load(file)
+
+    # Ako ABI podaci nisu već preuzeti, dohvaćamo ih putem API poziva
     api_url = f"https://api.etherscan.io/api?module=contract&action=getabi&address={token_address}&apikey=G4Z71GSAI5U1GFU97P1JBYVDTFAQW68UJ2"
     response = requests.get(api_url)
-    abi = response.json()['result']
-    return abi
+    if response.status_code == 200:
+        abi = response.json()['result']
+        # Spremamo ABI podatke u lokalnu datoteku radi ponovne upotrebe
+        with open(filename, "w") as file:
+            json.dump(abi, file)
+        return abi
+    else:
+        print("Failed to fetch ABI data")
+        return None
 
 abi_data = {}
 for token_name, token_address in tokens.items():
     abi = get_token_abi(token_address)
     abi_data[token_name] = abi
-
-# Ispis ABI podataka
-for token_name, abi in abi_data.items():
-    print(f"ABI podaci za {token_name}:")
-    print(abi)
-    print("\n")
